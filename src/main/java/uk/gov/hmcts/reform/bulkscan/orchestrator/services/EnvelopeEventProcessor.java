@@ -6,9 +6,9 @@ import com.microsoft.azure.servicebus.IMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.bulkscan.orchestrator.services.ccd.CaseRetriever;
+import uk.gov.hmcts.reform.bulkscan.orchestrator.services.ccd.SupplementaryEvidenceCreator;
+import uk.gov.hmcts.reform.bulkscan.orchestrator.services.servicebus.model.Classification;
 import uk.gov.hmcts.reform.bulkscan.orchestrator.services.servicebus.model.Envelope;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,12 +16,13 @@ import static uk.gov.hmcts.reform.bulkscan.orchestrator.services.servicebus.Enve
 
 @Service
 public class EnvelopeEventProcessor implements IMessageHandler {
+
     private static final Logger log = LoggerFactory.getLogger(EnvelopeEventProcessor.class);
 
-    private final CaseRetriever caseRetriever;
+    private final SupplementaryEvidenceCreator supplementaryEvidenceCreator;
 
-    public EnvelopeEventProcessor(CaseRetriever caseRetriever) {
-        this.caseRetriever = caseRetriever;
+    public EnvelopeEventProcessor(SupplementaryEvidenceCreator supplementaryEvidenceCreator) {
+        this.supplementaryEvidenceCreator = supplementaryEvidenceCreator;
     }
 
     @Override
@@ -43,11 +44,17 @@ public class EnvelopeEventProcessor implements IMessageHandler {
 
     private void process(IMessage message) {
         Envelope envelope = parse(message.getBody());
-        CaseDetails theCase = caseRetriever.retrieve(envelope.jurisdiction, envelope.caseRef);
-        log.info("Found worker case: {}:{}:{}",
-            theCase.getJurisdiction(),
-            theCase.getCaseTypeId(),
-            theCase.getId());
+
+        if (envelope.classification == Classification.SUPPLEMENTARY_EVIDENCE) {
+            supplementaryEvidenceCreator.createSupplementaryEvidence(envelope);
+        } else {
+            log.info(
+                "Skipped processing of envelope ID {} for case {} - classification {} not handled yet",
+                envelope.id,
+                envelope.caseRef,
+                envelope.classification
+            );
+        }
     }
 
     @Override
