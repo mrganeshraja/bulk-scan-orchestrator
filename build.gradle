@@ -187,6 +187,15 @@ dependencies {
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
   testCompile group: 'org.junit.vintage', name: 'junit-vintage-engine', version: versions.junit
+  testCompile group: 'org.springframework.cloud', name: 'spring-cloud-contract-wiremock', version: '2.0.1.RELEASE'
+  testCompile group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
+  testCompile group: 'org.apache.qpid', name: 'qpid-client', version: '6.3.3'
+  testCompile group: 'org.apache.qpid', name: 'qpid-jms-client', version: '0.36.0'
+//  testCompile group: 'org.apache.qpid', name: 'qpid-broker-core', version: '7.0.6'
+//  testCompile group: 'org.apache.qpid',name: 'qpid-broker-plugins-amqp-1-0-protocol', version: '7.0.6'
+//  testCompile group: 'org.apache.qpid', name: 'qpid-broker-plugins-memory-store', version: '7.0.6'
+
+
 
   annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
   integrationTestCompile sourceSets.main.runtimeClasspath
