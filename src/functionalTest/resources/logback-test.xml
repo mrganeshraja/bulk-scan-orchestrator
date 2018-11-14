@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+  <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+    <!-- reset all previous level configurations of all j.u.l. loggers -->
+    <resetJUL>true</resetJUL>
+  </contextListener>
+
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ASYNC_STDOUT" class="net.logstash.logback.appender.LoggingEventAsyncDisruptorAppender">
+    <appender-ref ref="STDOUT"/>
+  </appender>
+  <logger name="com.microsoft" level="ERROR"/>
+  <!--<shutdownHook/>-->
+  <root level="ERROR">
+    <appender-ref ref="ASYNC_STDOUT"/>
+  </root>
+
+
+</configuration>
